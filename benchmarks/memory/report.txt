@@ -1,0 +1,38 @@
+bb@piserver:~ $ sysbench --test=memory run --threads=3
+WARNING: the --test option is deprecated. You can pass a script name or path on the command line without any options.
+sysbench 1.0.20 (using system LuaJIT 2.1.1723681758)
+
+Running the test with following options:
+Number of threads: 3
+Initializing random number generator from current time
+
+
+Running memory speed test with the following options:
+  block size: 1KiB
+  total size: 102400MiB
+  operation: write
+  scope: global
+
+Initializing worker threads...
+
+Threads started!
+
+Total operations: 79317309 (7930823.79 per second)
+
+77458.31 MiB transferred (7744.95 MiB/sec)
+
+
+General statistics:
+    total time:                          10.0001s
+    total number of events:              79317309
+
+Latency (ms):
+         min:                                    0.00
+         avg:                                    0.00
+         max:                                    0.23
+         95th percentile:                        0.00
+         sum:                                17815.72
+
+Threads fairness:
+    events (avg/stddev):           26439103.0000/7864.44
+    execution time (avg/stddev):   5.9386/0.01

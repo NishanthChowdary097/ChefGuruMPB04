@@ -1,0 +1,32 @@
+bb@piserver:~ $ sysbench --test=cpu run --threads=3
+WARNING: the --test option is deprecated. You can pass a script name or path on the command line without any options.
+sysbench 1.0.20 (using system LuaJIT 2.1.1723681758)
+
+Running the test with following options:
+Number of threads: 3
+Initializing random number generator from current time
+
+
+Prime numbers limit: 10000
+
+Initializing worker threads...
+
+Threads started!
+
+CPU speed:
+    events per second:  7933.24
+
+General statistics:
+    total time:                          10.0004s
+    total number of events:              79344
+
+Latency (ms):
+         min:                                    0.37
+         avg:                                    0.38
+         max:                                    4.61
+         95th percentile:                        0.38
+         sum:                                29986.69
+
+Threads fairness:
+    events (avg/stddev):           26448.0000/62.87
+    execution time (avg/stddev):   9.9956/0.00
