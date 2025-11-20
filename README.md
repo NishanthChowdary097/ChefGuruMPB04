@@ -1,9 +1,16 @@
-# Welcome to ChefGuru a user friendly recipe generation platform.
+# Welcome to develpoment branch.
 
+create a branch with your name or any prefered phrase
 
-## DO NOT PUSH CODE HERE
-read the readme on develop branch
- 
+use the command
+
 ```
 git checkout develop
+git pull
+git checkout -b <name>
 ```
+
+start working on you beanch
+
+update .gitignore and enjoy!!!
+
