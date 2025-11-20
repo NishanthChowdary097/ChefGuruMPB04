@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   prometheus:
-    image: prom/prometheus:alpine
+    image: prom/prometheus:latest
     container_name: prometheus
     volumes:
       - ./confs/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
