@@ -1,2 +1,6 @@
 */venv/*
 *.env
+/dist
+.db
+.sqlite
+.sql
