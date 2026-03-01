@@ -1,0 +1,8 @@
+flask
+flask_restx
+flask_mail
+flask_jwt_extended
+redis
+mongoengine
+structlog
+dotenv
