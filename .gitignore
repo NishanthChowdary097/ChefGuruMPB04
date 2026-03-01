@@ -1,6 +1,8 @@
+__pycache__
 */venv/*
 *.env
 /dist
 .db
 .sqlite
 .sql
+venv
