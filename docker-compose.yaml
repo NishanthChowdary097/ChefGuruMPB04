@@ -17,24 +17,24 @@ services:
   #   ports:
   #     - "4000:80"
 
-  # auth_server:
-  #   image: auth
-  #   build:
-  #     context: .
-  #     dockerfile: ./auth/auth.Dockerfile
-  #   ports:
-  #     - "8000:8000"
+  auth_server:
+    image: auth
+    build:
+      context: .
+      dockerfile: ./auth/auth.Dockerfile
+    ports:
+      - "${AUTH_SERVER_PORT}:${AUTH_SERVER_PORT}"
 
-  # main_server:
-  #   image: main
-  #   build:
-  #     context: .
-  #     dockerfile: ./main/main.Dockerfile
-  #   networks:
-  #     - application
-  #   restart: unless-stopped
-  #   ports:
-  #     - "8001:8001"
+  main_server:
+    image: main
+    build:
+      context: .
+      dockerfile: ./main/main.Dockerfile
+    networks:
+      - application
+    restart: unless-stopped
+    ports:
+      - "${MAIN_SERVER_PORT}:${MAIN_SERVER_PORT}"
 
   mongodb:
     image: mongo:latest
@@ -54,8 +54,18 @@ services:
     container_name: redis
     restart: unless-stopped
     ports:
-      - "6379:6379"
-    command: ["redis-server", "--appendonly", "yes"]
+      - "${REDIS_PORT}:6379"
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_MAXMEMORY: ${REDIS_MEM_LIMIT}
+    command:
+      [
+        "redis-server",
+        "--requirepass", "${REDIS_PASSWORD}",
+        "--appendonly", "yes",
+        "--maxmemory", "${REDIS_MEM_LIMIT}",
+        "--maxmemory-policy", "allkeys-lru"
+      ]
     volumes:
       - redis_data:/data
 

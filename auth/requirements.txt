@@ -2,7 +2,9 @@ flask
 flask_restx
 flask_mail
 flask_jwt_extended
+Flask-Limiter
 redis
 mongoengine
 structlog
 dotenv
+gunicorn

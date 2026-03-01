@@ -4,6 +4,7 @@ from flask import redirect
 from auth.routes.mail import mail_ns
 from auth.routes.mail.models import mail_models
 from auth.routes.helpes import generate_tokens
+from auth.extensions import limiter
 
 from ODM import Mail
 
@@ -12,6 +13,7 @@ models = mail_models(mail_ns)
 @mail_ns.route("/verify/<user_id>/<uuid:token>")
 class VerifyByToken(Resource):
 
+    @limiter.limit("10 per minute")
     @mail_ns.response(200, "User verified successfully", models["response"]["user"])
     @mail_ns.response(400, "Invalid or expired token", models["response"]["error"])
     @mail_ns.response(404, "Mail not found", models["response"]["error"])
