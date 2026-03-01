@@ -1,18 +1,29 @@
 from mongoengine import connect
 from mongoengine.base.common import _document_registry
 from faker import Faker
+<<<<<<< HEAD
 import os
 from dotenv import load_dotenv
+=======
+>>>>>>> 8868936da80f3e0a9ed71cb858338daf5318005c
 
 from ODM import *
 # ----------------------------
 # Database Connection
 # ----------------------------
+<<<<<<< HEAD
 load_dotenv()
 connect(
     db="chefguru",
     host=os.getenv("MONGO_URI")
 )
+=======
+connect(
+    db="chefguru",
+    host="mongodb+srv://amethyst88:Nigger123@cluster0.43osksu.mongodb.net/"
+)
+
+>>>>>>> 8868936da80f3e0a9ed71cb858338daf5318005c
 f = Faker()
 
 def initialize_all_collections():
