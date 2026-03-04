@@ -88,8 +88,6 @@ class ProductionConfig(Config):
     JWT_COOKIE_DOMAIN = os.getenv('JWT_COOKIE_DOMAIN')
     JWT_COOKIE_SAMESITE = os.getenv('JWT_COOKIE_SAMESITE')
     LOG_MODE = 'production'
-    REDIS_HOST = 'host.docker.internal'
-    MONGO_HOST = 'host.docker.internal'
 
 configurations = {
     'dev': DevelopmentConfig,
