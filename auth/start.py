@@ -4,7 +4,7 @@ import dotenv
 import os
 
 dotenv.load_dotenv()
+app=get_app(configObject=configurations[os.getenv("ENVIRONMENT","dev")])
 
 if __name__ =="__main__":
-    app=get_app(configObject=configurations[os.getenv("ENVIRONMENT","dev")])
-    app.run()
+    app.run(port=os.getenv("AUTH_SERVER_PORT"))

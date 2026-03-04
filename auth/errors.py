@@ -41,6 +41,13 @@ def register_error_handlers(app):
             "error": "Internal Server Error",
             "message": "Something went wrong"
         }), 500
+    @app.errorhandler(429)
+    def ratelimit_handler(e):
+        return jsonify({
+            "status": 429,
+            "error": "Too Many Requests",
+            "message": "You have exceeded your request limit. Please try again later."
+        }), 429
 
 def register_enforsements(app):
     @app.before_request

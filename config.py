@@ -56,6 +56,8 @@ class Config:
     REDIS_PORT = os.getenv('REDIS_PORT', None)
     REDIS_PASSWORD = os.getenv('REDIS_PASSWORD', None)
     REDIS_HOST = os.getenv('REDIS_HOST', None)
+    REDIS_DB = os.getenv('REDIS_DB',0)
+    REDIS_RATE_LIMIT_DB = os.getenv('REDIS_RATE_LIMIT_DB',1)
     
     CHAT_ERROR_SIGNAL = f"__ERROR_{uuid.uuid4()}__"
     CHAT_TERMINATION_SIGNAL = f"__TERMINATE_{uuid.uuid4()}__"
@@ -76,8 +78,12 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG = True
+    USE_PROXY = False
+    PROXY_FIX_X_FOR = 1
 
 class ProductionConfig(Config):
+    USE_PROXY = True
+    PROXY_FIX_X_FOR = 1
     JWT_COOKIE_SECURE = True
     JWT_COOKIE_DOMAIN = os.getenv('JWT_COOKIE_DOMAIN')
     JWT_COOKIE_SAMESITE = os.getenv('JWT_COOKIE_SAMESITE')

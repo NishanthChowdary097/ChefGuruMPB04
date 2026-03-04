@@ -7,13 +7,43 @@ import logging.config
 from typing import Dict, Any, Type
 from flask_jwt_extended import JWTManager
 from flask_mail import Mail
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from mongoengine import connect
+import redis
 
 jwt = JWTManager()
 mail = Mail()
+limiter = None
+redis_client = None
+
+def init_redis(app):
+    global redis_client
+    redis_client = redis.Redis(
+        host=app.config["REDIS_HOST"],
+        port=app.config.get("REDIS_PORT"),
+        password=app.config.get("REDIS_PASSWORD"),
+        db=app.config.get("REDIS_DB"),
+        decode_responses=True
+    )
 
 def init_db(app):
     connect(db=app.config["MONGO_DB"],host=app.config["MONGO_URI"])
+
+def init_ratelimiter(app):
+    global limiter
+    redis_host = app.config["REDIS_HOST"]
+    redis_port = app.config.get("REDIS_PORT")
+    redis_db = app.config.get("REDIS_RATE_LIMIT_DB")
+    redis_password = app.config.get("REDIS_PASSWORD")
+    redis_uri = f"redis://:{redis_password}@{redis_host}:{redis_port}/{redis_db}"
+
+    limiter = Limiter(
+        key_func=get_remote_address,
+        app=app,
+        storage_uri=redis_uri,
+        default_limits=["200 per minute"]
+    )
 
 # LOGGING
 class StandardPythonDevRenderer:
