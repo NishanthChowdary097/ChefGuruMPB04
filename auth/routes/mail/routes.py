@@ -37,4 +37,4 @@ class VerifyByToken(Resource):
         user.is_verified = True
         user.save()
 
-        return redirect('./thankyou')
+        return redirect('/api/auth/user/thankyou')

@@ -110,9 +110,11 @@ def reset_password_page(token):
         user_id=str(user.id),
         current_year=datetime.utcnow().year
     )
+
 @user_bp.route("/thankyou")
 def thank_you_page():
     return render_template("thankyou_for_signup.html")
+
 @user_ns.route("/logout")
 class Logout(Resource):
     @jwt_required()
