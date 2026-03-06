@@ -1,5 +1,5 @@
 from flask_restx import Resource
-from flask import render_template
+from flask import redirect
 
 from auth.routes.mail import mail_ns
 from auth.routes.mail.models import mail_models
@@ -37,4 +37,4 @@ class VerifyByToken(Resource):
         user.is_verified = True
         user.save()
 
-        return render_template("thankyou_for_signup.html")
+        return redirect('./thankyou')
