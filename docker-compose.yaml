@@ -70,7 +70,6 @@ services:
     volumes:
       - redis_data:/data
 
-
 # Monitering stack
 
   prometheus:
@@ -100,17 +99,6 @@ services:
     depends_on:
       - prometheus
     restart: unless-stopped
-
-  # node-exporter:
-  #   image: prom/node-exporter:latest
-  #   container_name: node-exporter
-  #   pid: "host"
-  #   network_mode: "host"
-  #   command:
-  #     - '--path.rootfs=/host'
-  #   volumes:
-  #     - '/:/host:ro,rslave'
-  #   restart: unless-stopped
   
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:latest

@@ -5,24 +5,30 @@ FROM node:22.19.0 AS builder
 
 WORKDIR /app
 
-COPY frontend/todo-ui/package*.json ./
-
+# Copy only package files first for caching
+COPY frontend/package*.json ./frontend/
+WORKDIR /app/frontend
 RUN npm install --frozen-lockfile
 
-COPY frontend .
+# Copy the rest of frontend files
+COPY frontend/ ./
 
+# Build production
 RUN npm run build
-
 
 # ===========================
 # Stage 2: Serve with Nginx
 # ===========================
 FROM nginx:alpine
 
+# Remove default nginx website
 RUN rm -rf /usr/share/nginx/html/*
 
-COPY --from=builder /frontend/dist /usr/share/nginx/html
+# Copy build output
+COPY --from=builder /app/frontend/dist /usr/share/nginx/html
 
+# Expose port 80
 EXPOSE 80
 
+# Start nginx
 CMD ["nginx", "-g", "daemon off;"]

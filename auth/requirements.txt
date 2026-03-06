@@ -1,4 +1,5 @@
 flask
+flask-cors
 flask_restx
 flask_mail
 flask_jwt_extended
