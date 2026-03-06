@@ -24,8 +24,8 @@ class Login(Resource):
         
         if user.is_verified:
             return generate_tokens(user.id)
-
-        return {"message": "Login successful"}, 200
+        else:
+            return {"message":"Please verify the given email"}, 401
 
 @user_ns.route("/signup")
 class Signup(Resource):

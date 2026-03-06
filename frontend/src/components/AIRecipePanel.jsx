@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import IngredientDropdown from './IngredientDropdown';
 
-const API_BASE = 'http://localhost:5000'; // Change to your backend URL
+export const API_BASE =
+  import.meta.env.VITE_BASE_URL
+    ? `${import.meta.env.VITE_BASE_URL}/api/auth`
+    : "http://localhost:5000/api/auth"; // Change to your backend URL
 
 export default function AIRecipePanel() {
   const [selectedIngredients, setSelectedIngredients] = useState([]);
