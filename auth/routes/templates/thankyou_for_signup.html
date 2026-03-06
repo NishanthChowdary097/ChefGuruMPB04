@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Email Verified</title>
+
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Fraunces:wght@600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --clr-primary:#E8531A;
+  --clr-primary-dark:#C43D10;
+  --clr-primary-light:#FF7040;
+  --clr-accent:#1A7CE8;
+  --clr-amber:#F5A623;
+  --clr-bg:#FDF8F3;
+  --clr-surface:#FFFFFF;
+  --clr-surface2:#F5EEE6;
+  --clr-dark:#1C1108;
+  --clr-mid:#6B5744;
+  --clr-light:#A8927D;
+  --clr-border:#EAD9C9;
+  --clr-success:#2A9D5C;
+
+  --sp-1:8px;
+  --sp-2:13px;
+  --sp-3:21px;
+  --sp-4:34px;
+  --sp-5:55px;
+
+  --font-display:'Fraunces', Georgia, serif;
+  --font-body:'DM Sans', system-ui, sans-serif;
+
+  --fs-base:16px;
+  --fs-h2:26px;
+  --fs-h1:42px;
+
+  --r-lg:20px;
+
+  --shadow-lg:0 12px 40px rgba(28,17,8,.12),0 4px 12px rgba(28,17,8,.07);
+}
+
+*{
+box-sizing:border-box;
+margin:0;
+padding:0;
+}
+
+body{
+font-family:var(--font-body);
+background:var(--clr-bg);
+display:flex;
+align-items:center;
+justify-content:center;
+height:100vh;
+padding:var(--sp-4);
+color:var(--clr-dark);
+}
+
+.card{
+background:var(--clr-surface);
+padding:var(--sp-5);
+border-radius:var(--r-lg);
+box-shadow:var(--shadow-lg);
+text-align:center;
+max-width:500px;
+width:100%;
+border:1px solid var(--clr-border);
+}
+
+.icon{
+width:72px;
+height:72px;
+border-radius:50%;
+background:rgba(42,157,92,.12);
+display:flex;
+align-items:center;
+justify-content:center;
+margin:0 auto var(--sp-3);
+font-size:32px;
+color:var(--clr-success);
+}
+
+h1{
+font-family:var(--font-display);
+font-size:var(--fs-h1);
+margin-bottom:var(--sp-2);
+}
+
+p{
+font-size:var(--fs-base);
+color:var(--clr-mid);
+line-height:1.6;
+}
+
+.highlight{
+color:var(--clr-primary);
+font-weight:600;
+}
+
+.footer{
+margin-top:var(--sp-4);
+font-size:14px;
+color:var(--clr-light);
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<div class="icon">✓</div>
+
+<h1>Thank You</h1>
+
+<p>
+Your email has been successfully verified.
+</p>
+
+<p style="margin-top:13px">
+You can now return to the application and continue from the
+<span class="highlight">login page</span>.
+</p>
+
+<div class="footer">
+You may safely close this page.
+</div>
+
+</div>
+
+</body>
+</html>

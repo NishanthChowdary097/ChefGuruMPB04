@@ -1,179 +1,160 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Email Verification</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Email Verification</title>
 
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: #f5f7fb;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
-                   Roboto, Helvetica, Arial, sans-serif;
-      color: #1f2937;
-    }
+<style>
+:root {
+  --clr-primary:#E8531A;
+  --clr-primary-dark:#C43D10;
+  --clr-primary-light:#FF7040;
+  --clr-accent:#1A7CE8;
+  --clr-amber:#F5A623;
+  --clr-bg:#FDF8F3;
+  --clr-surface:#FFFFFF;
+  --clr-surface2:#F5EEE6;
+  --clr-dark:#1C1108;
+  --clr-mid:#6B5744;
+  --clr-light:#A8927D;
+  --clr-border:#EAD9C9;
+  --clr-success:#2A9D5C;
+}
 
-    .container {
-      max-width: 520px;
-      margin: 40px auto;
-      background-color: #ffffff;
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 15px 40px rgba(0,0,0,0.08);
-    }
+body {
+  margin:0;
+  padding:0;
+  background-color:var(--clr-bg);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  color:var(--clr-dark);
+}
 
-    /* Header */
-    .header {
-      background: linear-gradient(135deg, #2563eb, #4f46e5);
-      padding: 28px;
-      text-align: center;
-      color: #ffffff;
-    }
+.container {
+  max-width:520px;
+  margin:40px auto;
+  background-color:var(--clr-surface);
+  border-radius:16px;
+  overflow:hidden;
+  box-shadow:0 15px 40px rgba(28,17,8,.12);
+  border:1px solid var(--clr-border);
+}
 
-    .header h1 {
-      margin: 0;
-      font-size: 26px;
-      font-weight: 700;
-    }
+/* Header */
+.header {
+  background:linear-gradient(135deg,var(--clr-primary),var(--clr-primary-light));
+  padding:28px;
+  text-align:center;
+  color:white;
+}
 
-    /* Content */
-    .content {
-      padding: 32px;
-    }
+.header h1 {
+  margin:0;
+  font-size:26px;
+  font-weight:700;
+}
 
-    p {
-      font-size: 15px;
-      line-height: 1.7;
-      margin: 16px 0;
-      color: #374151;
-    }
+/* Content */
+.content {
+  padding:32px;
+}
 
-    /* Code box */
-    .code-box {
-      margin: 28px 0;
-      padding: 20px;
-      text-align: center;
-      border-radius: 12px;
-      background: #f1f5f9;
-      border: 1px dashed #c7d2fe;
-    }
+p {
+  font-size:15px;
+  line-height:1.7;
+  margin:16px 0;
+  color:var(--clr-mid);
+}
 
-    .code {
-      font-size: 32px;
-      letter-spacing: 8px;
-      font-weight: 800;
-      color: #1e3a8a;
-    }
+/* Button */
+.button-wrapper {
+  text-align:center;
+  margin:36px 0;
+}
 
-    /* Button */
-    .button-wrapper {
-      text-align: center;
-      margin: 36px 0;
-    }
+.verify-button {
+  display:inline-block;
+  padding:15px 34px;
+  font-size:16px;
+  font-weight:700;
+  text-decoration:none;
+  color:white;
+  background:linear-gradient(135deg,var(--clr-primary),var(--clr-primary-light));
+  border-radius:10px;
+  box-shadow:0 8px 20px rgba(232,83,26,.35);
+}
 
-    .verify-button {
-      display: inline-block;
-      padding: 15px 34px;
-      font-size: 16px;
-      font-weight: 700;
-      text-decoration: none;
-      color: #ffffff;
-      background: linear-gradient(135deg, #2563eb, #4f46e5);
-      border-radius: 10px;
-      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35);
-    }
+/* Footer */
+.footer {
+  font-size:12px;
+  color:var(--clr-light);
+  text-align:center;
+  padding:24px 16px 32px;
+  border-top:1px solid var(--clr-border);
+}
 
-    /* Footer */
-    .footer {
-      font-size: 12px;
-      color: #6b7280;
-      text-align: center;
-      padding: 24px 16px 32px;
-      border-top: 1px solid #e5e7eb;
-    }
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color:#1C1108;
+    color:#FDF8F3;
+  }
 
-    /* Dark mode */
-    @media (prefers-color-scheme: dark) {
-      body {
-        background-color: #020617;
-        color: #e5e7eb;
-      }
+  .container {
+    background-color:#2a1b10;
+    border:none;
+    box-shadow:none;
+  }
 
-      .container {
-        background-color: #020617;
-        box-shadow: none;
-      }
+  .content p {
+    color:#e7d6c7;
+  }
 
-      .content p {
-        color: #d1d5db;
-      }
-
-      .code-box {
-        background-color: #0f172a;
-        border-color: #334155;
-      }
-
-      .code {
-        color: #93c5fd;
-      }
-
-      .footer {
-        color: #9ca3af;
-        border-color: #1f2937;
-      }
-    }
-  </style>
+  .footer {
+    color:#c7a98f;
+    border-color:#3a2517;
+  }
+}
+</style>
 </head>
 
 <body>
-  <div class="container">
+<div class="container">
 
-    <div class="header">
-      <h1>Verify Your Email</h1>
-    </div>
-
-    <div class="content">
-      <p>
-        Hello, <strong>{{USERNAME}}</strong> 👋
-      </p>
-
-      <p>
-        Welcome to <strong>Chef Guru</strong> 👨‍🍳  
-        Please confirm your email address to start your culinary journey.
-      </p>
-
-      <!-- <p>
-        Enter the verification code below:
-      </p> -->
-
-      <!-- <div class="code-box">
-        <div class="code">{{CODE}}</div>
-      </div> -->
-
-      <p style="text-align:center;">
-        Verify instantly using the button:
-      </p>
-
-      <div class="button-wrapper">
-        <a href="{{VERIFY_LINK}}" class="verify-button">
-          Verify Email
-        </a>
-      </div>
-
-      <p>
-        This code expires in <strong>10 minutes</strong>.  
-        If you didn’t request this, you can safely ignore this email.
-        Do not click on this Button.
-      </p>
-    </div>
-
-
-    <div class="footer">
-      © {{CURRENT_YEAR}} Chef Guru · Crafted with ❤️ for food lovers
-    </div>
-
+  <div class="header">
+    <h1>Verify Your Email</h1>
   </div>
+
+  <div class="content">
+    <p>
+      Hello, <strong>{{USERNAME}}</strong> 👋
+    </p>
+
+    <p>
+      Welcome to <strong>Chef Guru</strong> 👨‍🍳  
+      Please confirm your email address to start your culinary journey.
+    </p>
+
+    <p style="text-align:center;">
+      Verify instantly using the button:
+    </p>
+
+    <div class="button-wrapper">
+      <a href="{{VERIFY_LINK}}" class="verify-button">
+        Verify Email
+      </a>
+    </div>
+
+    <p>
+      This link expires in <strong>10 minutes</strong>.  
+      If you didn’t request this, you can safely ignore this email.
+    </p>
+  </div>
+
+  <div class="footer">
+    © {{CURRENT_YEAR}} Chef Guru · Crafted with ❤️ for food lovers
+  </div>
+
+</div>
 </body>
 </html>
