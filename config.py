@@ -14,6 +14,7 @@ warnings.simplefilter("always", EnvironmentWarning)
 
 
 class Config:
+    HF_API=os.getenv("HF_API","https://mosako-chef-guru.hf.space")
     # ports
     AUTH_SERVER_PORT = os.getenv('AUTH_SERVER_PORT',5000)
     MAIN_SERVER_PORT = os.getenv('MAIN_SERVER_PORT',6000)
@@ -82,6 +83,7 @@ class DevelopmentConfig(Config):
     PROXY_FIX_X_FOR = 1
 
 class ProductionConfig(Config):
+    HF_API="https://"
     USE_PROXY = True
     PROXY_FIX_X_FOR = 1
     JWT_COOKIE_SECURE = True

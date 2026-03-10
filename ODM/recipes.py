@@ -27,96 +27,91 @@ class Ingredient(Document):
 
 class RecipeIngredient(EmbeddedDocument):
     ingredient = ReferenceField(Ingredient, required=True)
-    quantity = FloatField(required=True)
-    
+    quantity = StringField(required=True)
+
     def to_dict(self):
         return {
-            "ingredient": self.ingredient.to_dict() if self.ingredient else None,
+            "ingredient": self.ingredient.to_dict(),
             "quantity": self.quantity
         }
 
+class RecipeStep(EmbeddedDocument):
+    step_number = IntField()
+    step = StringField()
+    timing = StringField()
+    description = StringField()
+    explanation = DictField()
+
+    def to_dict(self):
+        return {
+            "step_number": self.step_number,
+            "step": self.step,
+            "timing": self.timing,
+            "description": self.description,
+            "explanation": self.explanation or {}
+        }
+    
 class Recipe(Document):
+
     user = ReferenceField("User", required=True)
 
     title = StringField(required=True)
     description = StringField()
+
     public = BooleanField(default=False)
 
     ingredients = ListField(
         EmbeddedDocumentField(RecipeIngredient)
     )
 
-    instructions = ListField(StringField())  # step-by-step
-    prep_time = IntField()   # minutes
-    cook_time = IntField()   # minutes
+    instructions = ListField(
+        EmbeddedDocumentField(RecipeStep)
+    )
+
+    prep_time = IntField()
+    cook_time = IntField()
     servings = IntField()
 
-    nutrition_info = DictField()  # calories, protein, fat, etc.
     generation_prompt = StringField()
 
     created_at = DateTimeField(default=datetime.utcnow)
 
     meta = {
         "collection": "recipes",
-        "indexes": ["user", "created_at"]
+        "indexes": ["user", "-created_at"]
     }
 
     def to_dict(self):
         return {
             "id": str(self.id),
-            "user": str(self.user.id) if self.user else None,
+            "user": str(self.user.id),
             "title": self.title,
             "description": self.description,
-            "ingredients": [ri.to_dict() for ri in self.ingredients],
-            "instructions": self.instructions,
-            "public": self.public,
+            "ingredients": [i.to_dict() for i in self.ingredients],
+            "instructions": [s.to_dict() for s in self.instructions],
             "prep_time": self.prep_time,
             "cook_time": self.cook_time,
             "servings": self.servings,
-            "nutrition_info": self.nutrition_info,
-            "generation_prompt": self.generation_prompt,
-            "created_at": self.created_at.isoformat() if self.created_at else None
-        }
-
-class RecipeRating(Document):
-    user = ReferenceField("User", required=True)
-    recipe = ReferenceField(Recipe, required=True)
-
-    rating = IntField(min_value=1, max_value=5)
-    comment = StringField()
-
-    created_at = DateTimeField(default=datetime.utcnow)
-
-    meta = {
-        "collection": "recipe_ratings",
-        "indexes": ["user", "recipe"]
-    }
-
-    def to_dict(self):
-        return {
-            "id": str(self.id),
-            "user": str(self.user.id),
-            "recipe": str(self.recipe.id),
-            "rating": self.rating,
-            "comment": self.comment,
+            "public": self.public,
             "created_at": self.created_at.isoformat()
         }
 
-class SavedRecipe(Document):
-    user = ReferenceField("User", required=True)
-    recipe = ReferenceField(Recipe, required=True)
 
-    created_at = DateTimeField(default=datetime.utcnow)
+# class SavedRecipe(Document):
+#     user = ReferenceField("User", required=True)
+#     recipe = ReferenceField(Recipe, required=True)
 
-    meta = {
-        "collection": "saved_recipes",
-        "indexes": ["user", "recipe"]
-    }
+#     created_at = DateTimeField(default=datetime.utcnow)
+
+#     meta = {
+#         "collection": "saved_recipes",
+#         "indexes": ["user", "recipe"]
+#     }
     
-    def to_dict(self):
-        return {
-            "id": str(self.id),
-            "user": str(self.user.id),
-            "recipe": str(self.recipe.id),
-            "created_at": self.created_at.isoformat()
-        }
+#     def to_dict(self):
+#         return {
+#             "id": str(self.id),
+#             "user": str(self.user.id),
+#             "recipe": str(self.recipe.id),
+#             "created_at": self.created_at.isoformat()
+#         }
