@@ -1,26 +1,83 @@
+# ============================================
+# Base URLs and Token
+# ============================================
 @baseUrl = http://localhost:5000/api/auth
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc2NjQ3MTU3NiwianRpIjoiMjVhZTA1ODktMGUxMC00MWMyLWJmZGItNTU0YTIwYWJmNDU4IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjY5NGEzNjk2ZTYzNzk4OTk2ZDE3ZWRlNSIsIm5iZiI6MTc2NjQ3MTU3NiwiY3NyZiI6IjQxYWRkZmNlLTkxZTAtNDcwMC04MGVmLWM4ZDdmNmU4ZTM5YSIsImV4cCI6MTc2NjQ3MjQ3Nn0.9Ubl5q-MmVXOFWCcZY1D4izZt83HIMns9rYLSOkJgM0
+@mainBaseUrl = http://localhost:5001/api/app
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc3MzEzNDA4OSwianRpIjoiMDYxNTJmNGYtMDAxNC00MjIzLWE5MGYtNGVkNjAzZDQ3MGExIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjY5YTNmMjZjMjc0NTgzZTdiZTk5YTUwNyIsIm5iZiI6MTc3MzEzNDA4OSwiY3NyZiI6IjE4NDlmNGRhLWEwOTItNGZmOC04MzYzLWM0NDI1MGYxYmJjNCIsImV4cCI6MTc3MzEzNDk4OX0.aTKVBsTENmdfZ4jAF9OKkl6SaYbgvsitwbr6H3w-LxY
 
-### Create User (POST)
+# ============================================
+# Auth
+# ============================================
+
+### Create User (Signup)
 POST {{baseUrl}}/user/signup
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "username": "username",
+  "username": "john_doe",
   "email": "john@example.com",
   "password": "secret123"
 }
 
-### Create User (POST)
+### Login User
 POST {{baseUrl}}/user/login
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "email": "john@example.com",
-  "password": "secret123"
+  "email": "user@example.com",
+  "password": "12345678"
 }
 
-### verify mail
+### Verify Email
 GET {{baseUrl}}/mail/verify/694a4035e8148906958d98b2/aea6dc7e-6955-4f63-911d-23e59984b7a5
+
+# ============================================
+# Main
+# ============================================
+
+### Generate Recipe
+POST {{mainBaseUrl}}/recipe/generate
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "ingredients": ["tomato", "basil", "mozzarella"]
+}
+
+### Explain Step
+POST {{mainBaseUrl}}/recipe/explain_step
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "step_number": 1,
+  "context": "Tomato, Basil, Mozzarella Salad",
+  "recipe_id": "69afcfbadf39d1a2c5cd2f94"
+}
+
+### Save Recipe
+POST {{mainBaseUrl}}/recipe/save_recipe
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "temp_key": "recipe_temp:69a3f26c274583e7be99a507:69afcfbadf39d1a2c5cd2f94"
+}
+
+### List Recipes
+GET {{mainBaseUrl}}/recipe/saved
+Authorization: Bearer {{token}}
+
+### Search Ingredients
+GET {{mainBaseUrl}}/recipe/search_ingredients
+Authorization: Bearer {{token}}
+
+###
+GET {{mainBaseUrl}}/recipe/temp_recipes
+Authorization: Bearer {{token}}
+
+###
+GET {{mainBaseUrl}}/recipe/temp_recipes/69afcfbadf39d1a2c5cd2f94
+Authorization: Bearer {{token}}
