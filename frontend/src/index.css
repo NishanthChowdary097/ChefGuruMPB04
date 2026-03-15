@@ -1,5 +1,5 @@
 /* ============================================
-   Chef Guru – DESIGN SYSTEM
+   ChefGuru – DESIGN SYSTEM
    Golden Ratio Color + Spacing + Typography
    ============================================ */
 
@@ -2586,4 +2586,18 @@ input, select, textarea, button { max-width: 100%; }
   border-top-color: var(--clr-primary);
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
+}
+
+/* ── Step explain button responsive ── */
+@media (max-width: 479px) {
+  .ai-step-item { flex-direction: column !important; }
+  .ai-step-item > div:first-child { flex-direction: column; }
+}
+
+/* ── Explanation panel ── */
+@media (max-width: 479px) {
+  /* pull explanation to full width on phone */
+  .ai-step-item > div[style*="margin-left: 36px"] {
+    margin-left: 0 !important;
+  }
 }

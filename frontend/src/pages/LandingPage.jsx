@@ -34,54 +34,43 @@ export default function LandingPage() {
   return (
     <div className="landing-page">
 
-      {/* NAV */}
       <nav className={`landing-nav${scrolled ? ' scrolled' : ''}`}>
         <Link to="/" className="nav-logo">
           <span className="logo-icon">✦</span>
-          <span>Chef Guru</span>
+          <span>ChefGuru</span>
         </Link>
         <div className="landing-nav-actions">
           <Link to="/login" className="btn-nav-login">Log in</Link>
-          <Link to="/signup" className="btn-nav-signup">Get Started →</Link>
+          <Link to="/signup" className="btn-nav-signup">Get Started</Link>
         </div>
       </nav>
 
-      {/* HERO */}
       <section className="landing-hero">
         <div className="landing-hero-bg">
           <div className="orb orb1" />
           <div className="orb orb2" />
           <div className="orb orb3" />
         </div>
-
         <div style={{ position: 'relative', zIndex: 1, textAlign: 'center', width: '100%' }}>
           <div className="landing-hero-content" style={{ margin: '0 auto' }}>
             <div className="landing-badge">
               <span className="landing-badge-dot" />
               Chef Guru AI · GPU Accelerated
             </div>
-
             <h1 className="landing-title">
               Turn your fridge into<br />
               <span className="gradient-text">culinary magic.</span>
             </h1>
-
             <p className="landing-subtitle">
               Type any ingredients you have. Our AI generates a complete,
-              restaurant-quality recipe with step-by-step science — in seconds.
+              restaurant-quality recipe with step-by-step science in seconds.
             </p>
-
             <div className="landing-cta-row">
-              <Link to="/signup" className="btn-cta-primary">
-                ✦ Start Cooking Free
-              </Link>
-              <Link to="/login" className="btn-cta-secondary">
-                I have an account →
-              </Link>
+              <Link to="/signup" className="btn-cta-primary">Start Cooking Free</Link>
+              <Link to="/login" className="btn-cta-secondary">I have an account</Link>
             </div>
           </div>
 
-          {/* Preview cards */}
           <div className="landing-hero-visual" style={{ margin: 'var(--sp-7) auto 0' }}>
             {PREVIEW_RECIPES.map((r) => (
               <div key={r.title} className="hero-food-card">
@@ -93,15 +82,14 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* STATS */}
       <div className="stats-bar">
         <div className="container">
           <div className="stats-row">
             {[
               { n: '100+', l: 'Recipes Generated' },
-              { n: 'GPU',  l: 'Accelerated AI' },
-              { n: 'RAG',  l: 'Powered Context' },
-              { n: '∞',   l: 'Ingredients' },
+              { n: 'GPU',  l: 'Accelerated AI'   },
+              { n: 'RAG',  l: 'Powered Context'   },
+              { n: '∞',   l: 'Ingredients'        },
             ].map(s => (
               <div key={s.l} className="stat-item">
                 <div className="stat-number">{s.n}</div>
@@ -112,10 +100,9 @@ export default function LandingPage() {
         </div>
       </div>
 
-      {/* FEATURES */}
       <section className="landing-features">
         <div className="container">
-          <p className="landing-section-label">Why Chef Guru</p>
+          <p className="landing-section-label">Why ChefGuru</p>
           <h2 className="landing-section-title">Everything a curious cook needs</h2>
           <div className="features-grid">
             {FEATURES.map(f => (
@@ -129,7 +116,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* HOW IT WORKS */}
       <section className="landing-how">
         <div className="container">
           <p className="landing-section-label">How It Works</p>
@@ -146,21 +132,17 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* CTA BANNER */}
       <section className="landing-cta-banner">
         <div className="container">
           <h2>Ready to cook something extraordinary?</h2>
           <p>Join thousands of home cooks turning everyday ingredients into amazing meals.</p>
-          <Link to="/signup" className="btn-cta-primary">
-            ✦ Get Started — It is Free
-          </Link>
+          <Link to="/signup" className="btn-cta-primary">Get Started — It is Free</Link>
         </div>
       </section>
 
-      {/* FOOTER */}
       <footer className="footer">
         <div className="container">
-          <p className="footer-logo">✦ Chef Guru</p>
+          <p className="footer-logo">✦ ChefGuru</p>
           <p className="footer-copy">Designed with the Golden Ratio. Powered by Chef Guru AI.</p>
         </div>
       </footer>

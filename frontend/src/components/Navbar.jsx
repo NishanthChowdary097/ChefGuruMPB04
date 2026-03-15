@@ -20,9 +20,9 @@ export default function Navbar() {
   return (
     <header className={`navbar${scrolled ? ' scrolled' : ''}`} role="banner">
       <div className="nav-inner">
-        <Link to="/app" className="nav-logo" aria-label="Chef Guru Home">
+        <Link to="/app" className="nav-logo" aria-label="ChefGuru Home">
           <span className="logo-icon" aria-hidden="true">✦</span>
-          <span>Chef Guru</span>
+          <span>ChefGuru</span>
         </Link>
 
         <nav className="nav-links" role="navigation" aria-label="Main Navigation">
