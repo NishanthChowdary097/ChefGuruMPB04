@@ -4,7 +4,7 @@ import LandingPage      from './pages/LandingPage';
 import LoginPage        from './pages/LoginPage';
 import SignupPage       from './pages/SignupPage';
 import AppPage          from './pages/AppPage';
-import VerifyEmailPage  from './pages/VerifyEmailPage';
+// import VerifyEmailPage  from './pages/VerifyEmailPage';
 
 function ProtectedRoute({ children }) {
   const { user } = useAuth();
@@ -29,7 +29,7 @@ export default function App() {
             GET /api/auth/mail/verify/:userId/:token
             The email contains a link like:
             http://yourfrontend.com/verify/:userId/:token  */}
-        <Route path="/verify/:userId/:token" element={<VerifyEmailPage />} />
+        {/* <Route path="/verify/:userId/:token" element={<VerifyEmailPage />} /> */}
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
