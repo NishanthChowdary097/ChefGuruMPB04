@@ -26,5 +26,5 @@ copy --chown=app_user:app_user .env .
 
 USER app_user
 
-EXPOSE ${MAIN_SERVER_PORT:-5000}
-ENTRYPOINT ["sh", "-c", "exec gunicorn -w ${GUNICORN_WORKERS:-1} -b 0.0.0.0:${MAIN_SERVER_PORT:-5000} main.start:app"]
+EXPOSE ${MAIN_SERVER_PORT:-5001}
+ENTRYPOINT ["sh", "-c", "exec gunicorn -w ${GUNICORN_WORKERS:-1} -b 0.0.0.0:${MAIN_SERVER_PORT:-5001} main.start:app"]

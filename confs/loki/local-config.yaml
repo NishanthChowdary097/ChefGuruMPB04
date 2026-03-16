@@ -14,7 +14,7 @@ ingester:
   chunk_target_size: 1048576
   max_transfer_retries: 0
   wal:
-    enabled: flase
+    enabled: false
 
 schema_config:
   configs:

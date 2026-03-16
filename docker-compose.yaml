@@ -31,8 +31,7 @@ services:
     build:
       context: .
       dockerfile: ./main/main.Dockerfile
-    networks:
-      - application
+
     restart: unless-stopped
     ports:
       - "${MAIN_SERVER_PORT}:${MAIN_SERVER_PORT}"
@@ -120,7 +119,7 @@ services:
     volumes:
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./confs/promtail/promtail-config.yaml:/etc/promtail/config.yml:ro
+      - ./confs/promtail/promtail.conf.yaml:/etc/promtail/config.yml:ro
     command:
       - -config.file=/etc/promtail/config.yml
     restart: unless-stopped
@@ -136,13 +135,12 @@ services:
       - -config.file=/etc/loki/local-config.yaml
     volumes:
       - ./confs/loki/local-config.yaml:/etc/loki/local-config.yaml:ro
-      - ./loki-data:./loki
+      - ./loki-data:/loki
     networks:
       - monitor
     restart: unless-stopped
 
 networks:
-  application:
   monitor:
 
 volumes:
