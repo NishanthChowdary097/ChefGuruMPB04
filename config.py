@@ -52,7 +52,7 @@ class Config:
     MONGO_USERNAME = os.getenv('MONGO_USERNAME', None)
     MONGO_PASSWORD = os.getenv('MONGO_PASSWORD', None)
 
-    MONGO_URI= f"mongodb://{MONGO_USERNAME}:{MONGO_PASSWORD}@{MONGO_HOST}:{MONGO_PORT}/{MONGO_DB}?authSource=admin"
+    MONGO_URI= f"mongodb://localhost:27017/"
 
     REDIS_PORT = os.getenv('REDIS_PORT', None)
     REDIS_PASSWORD = os.getenv('REDIS_PASSWORD', None)
