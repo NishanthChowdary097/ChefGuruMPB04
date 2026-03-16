@@ -5,9 +5,9 @@ import Hero from '../components/Hero';
 import IngredientsSection from '../components/IngredientsSection';
 import FiltersSection from '../components/FiltersSection';
 import RecipesSection from '../components/RecipesSection';
-import FavoritesSection from '../components/FavoritesSection';
 import RecipeModal from '../components/RecipeModal';
 import AIRecipePanel from '../components/AIRecipePanel';
+import RecipeHistory from '../components/RecipeHistory';
 import Footer from '../components/Footer';
 
 export default function AppPage() {
@@ -29,8 +29,22 @@ export default function AppPage() {
   return (
     <>
       <Navbar />
+
+      {/* 1 — Hero search bar */}
       <Hero addIngredient={state.addIngredient} />
 
+      {/* 2 — AI Recipe Generator at the top */}
+      <section style={{
+        padding: 'var(--sp-7) 0',
+        background: 'var(--clr-bg)',
+        borderTop: '1px solid var(--clr-border)'
+      }}>
+        <div className="container">
+          <AIRecipePanel />
+        </div>
+      </section>
+
+      {/* 3 — Ingredients section below AI panel */}
       <IngredientsSection
         selectedIngredients={state.selectedIngredients}
         addIngredient={state.addIngredient}
@@ -38,13 +52,7 @@ export default function AppPage() {
         clearIngredients={state.clearIngredients}
       />
 
-      {/* AI Recipe Generation panel */}
-      <section style={{ padding: 'var(--sp-7) 0', background: 'var(--clr-bg)', borderTop: '1px solid var(--clr-border)' }}>
-        <div className="container">
-          <AIRecipePanel />
-        </div>
-      </section>
-
+      {/* 4 — Filters + recipe browser */}
       <FiltersSection
         filter={state.filter}
         setFilter={state.setFilter}
@@ -67,12 +75,8 @@ export default function AppPage() {
         clearIngredients={state.clearIngredients}
       />
 
-      <FavoritesSection
-        favorites={state.favorites}
-        toggleFavorite={state.toggleFavorite}
-        selectedIngredients={state.selectedIngredients}
-        setModalRecipeId={state.setModalRecipeId}
-      />
+      {/* 5 — History above footer */}
+      <RecipeHistory />
 
       <Footer />
 

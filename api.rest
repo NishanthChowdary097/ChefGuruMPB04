@@ -17,6 +17,12 @@ Authorization: Bearer {{token}}
 {
   "username": "john_doe",
   "email": "john@example.com",
+=======
+@mainBaseUrl = http://localhost:5001/api/app
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc3MzU3MTc5MCwianRpIjoiNWRhZWQwNjUtM2QxOC00ZjdjLWJiNWYtNzlmMzllYjQ2NjVkIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjY5YjY2ZTRlNGJhZWM2M2UxYWYwNWRhYiIsIm5iZiI6MTc3MzU3MTc5MCwiY3NyZiI6IjI2OGM3YzFjLWM4N2EtNDk4Yy04MDM3LTk5MDA5YTE1ZDFjZCIsImV4cCI6MTc3MzY3MTY5MH0.KpTlwOdKcnd0CN6y0wAljU4CDXv-PxZHqjbeMa2g07s
+  "username": "john_doe",
+  "email": "john12@example.com",
+>>>>>>> Stashed changes
   "password": "secret123"
 }
 

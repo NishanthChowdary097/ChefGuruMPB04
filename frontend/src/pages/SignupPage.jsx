@@ -39,7 +39,7 @@ export default function SignupPage() {
           <div className="auth-visual-orb auth-visual-orb2" />
           <div className="auth-visual-content">
             <Link to="/" className="auth-visual-logo">
-              <span style={{ color: 'var(--clr-primary-light)' }}>✦</span> Chef Guru
+              <span style={{ color: 'var(--clr-primary-light)' }}>✦</span> ChefGuru
             </Link>
             <h2 className="auth-visual-tagline">Almost there,<br /><em>check your inbox.</em></h2>
             <p className="auth-visual-sub">
@@ -51,7 +51,7 @@ export default function SignupPage() {
         <div className="auth-form-panel">
           <div className="auth-form-inner">
             <Link to="/" className="auth-mobile-logo">
-              <span style={{ color: 'var(--clr-primary)' }}>✦</span> Chef Guru
+              <span style={{ color: 'var(--clr-primary)' }}>✦</span> ChefGuru
             </Link>
 
             <div style={{ textAlign: 'center', padding: 'var(--sp-4) 0' }}>
@@ -83,7 +83,7 @@ export default function SignupPage() {
               }}>
                 {[
                   { icon: '1', text: 'Open your email inbox' },
-                  { icon: '2', text: 'Find the email from Chef Guru' },
+                  { icon: '2', text: 'Find the email from ChefGuru' },
                   { icon: '3', text: 'Click the verification link' },
                   { icon: '4', text: 'Come back here and sign in' },
                 ].map(s => (
@@ -132,7 +132,7 @@ export default function SignupPage() {
         <div className="auth-visual-orb auth-visual-orb2" />
         <div className="auth-visual-content">
           <Link to="/" className="auth-visual-logo">
-            <span style={{ color: 'var(--clr-primary-light)' }}>✦</span> Chef Guru
+            <span style={{ color: 'var(--clr-primary-light)' }}>✦</span> ChefGuru
           </Link>
           <h2 className="auth-visual-tagline">Your kitchen,<br /><em>reimagined.</em></h2>
           <p className="auth-visual-sub">
@@ -156,7 +156,7 @@ export default function SignupPage() {
       <div className="auth-form-panel">
         <div className="auth-form-inner">
           <Link to="/" className="auth-mobile-logo">
-            <span style={{ color: 'var(--clr-primary)' }}>✦</span> Chef Guru
+            <span style={{ color: 'var(--clr-primary)' }}>✦</span> ChefGuru
           </Link>
 
           <div className="auth-form-header">
