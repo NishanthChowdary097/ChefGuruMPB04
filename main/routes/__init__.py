@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_restx import Api
+from flask_cors import CORS
 import structlog
 from werkzeug.middleware.proxy_fix import ProxyFix
 
@@ -11,7 +12,7 @@ def get_app(configObject):
     app = Flask(__name__)
 
     app.config.from_object(configObject)
-
+    CORS(app)
     if app.config.get("USE_PROXY"):
         app.wsgi_app = ProxyFix(
             app.wsgi_app,
