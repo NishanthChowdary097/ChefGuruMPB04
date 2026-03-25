@@ -17,6 +17,7 @@ services:
       dockerfile: ./frontend/frontend.Dockerfile
     ports:
       - "4000:80"
+    restart: unless-stopped
 
   auth_server:
     image: auth
@@ -25,6 +26,7 @@ services:
       dockerfile: ./auth/auth.Dockerfile
     ports:
       - "${AUTH_SERVER_PORT}:${AUTH_SERVER_PORT}"
+    restart: unless-stopped
 
   main_server:
     image: main
