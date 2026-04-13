@@ -18,7 +18,7 @@ from chromadb.config import Settings
 import google.generativeai as genai
 
 
-GEMINI_API_KEY = "AIzaSyCgkYLSqEE6TpEby4oVXBjHSJ-AJIq3a3U"
+GEMINI_API_KEY = "api_key"
 genai.configure(api_key=GEMINI_API_KEY)
 gem_model = genai.GenerativeModel("gemini-3-flash-preview")
 # from pyngrok import ngrok
