@@ -28,7 +28,7 @@ def call_ai(endpoint, payload):
 
     for _ in range(3):
         try:
-            resp = requests.post(url, json=payload, timeout=45)
+            resp = requests.post(url, json=payload, timeout=4000)
             resp.raise_for_status()
             return resp.json()
         except Exception as e:
@@ -49,6 +49,7 @@ class GenerateRecipe(Resource):
         user_id = get_jwt_identity()
         data = request.json
         ingredients = data.get("ingredients")
+        language = data.get("language", "English")
 
         if not ingredients or not isinstance(ingredients, list):
             return {"message": "Ingredients must be a list"}, 400
@@ -58,7 +59,7 @@ class GenerateRecipe(Resource):
 
         try:
 
-            recipe_data = call_ai("generate", {"ingredients": ingredients})
+            recipe_data = call_ai("generate", {"ingredients": ingredients, "language": language})
 
             recipe_id = str(ObjectId())
             recipe_data["id"] = recipe_id
@@ -134,6 +135,7 @@ class ExplainStep(Resource):
                     return {"message": "Invalid step_number"}, 400
 
                 step_text = steps[step_number - 1]["step"]
+                language = recipe.language
 
             else:
                 temp_key = f"recipe_temp:{user_id}:{recipe_id}"
@@ -154,12 +156,14 @@ class ExplainStep(Resource):
                     return {"message": "Invalid step_number"}, 400
 
                 step_text = steps[step_number - 1]["step"]
+                language = recipe_data.get("language", "en")
 
             explanation = call_ai(
                 "explain_step",
                 {
                     "step": step_text,
-                    "context": context
+                    "context": context,
+                    "language": language
                 }
             )
 
@@ -239,7 +243,8 @@ class SaveRecipe(Resource):
             title=recipe_data.get("title"),
             description=recipe_data.get("description"),
             ingredients=ingredients_list,
-            instructions=recipe_data.get("instructions")
+            instructions=recipe_data.get("instructions"),
+            language=recipe_data.get("language", "en")
         )
         recipe.save()
         redis_client.delete(temp_key)
