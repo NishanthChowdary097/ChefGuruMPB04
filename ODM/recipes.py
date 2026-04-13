@@ -75,6 +75,7 @@ class Recipe(Document):
     generation_prompt = StringField()
 
     created_at = DateTimeField(default=datetime.utcnow)
+    language = StringField(default="english")
 
     meta = {
         "collection": "recipes",
@@ -93,7 +94,8 @@ class Recipe(Document):
             "cook_time": self.cook_time,
             "servings": self.servings,
             "public": self.public,
-            "created_at": self.created_at.isoformat()
+            "created_at": self.created_at.isoformat(),
+            "language": self.language
         }
 
 

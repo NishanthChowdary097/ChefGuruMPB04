@@ -2,10 +2,31 @@ import { useState, useCallback } from 'react';
 import IngredientDropdown from './IngredientDropdown';
 import { useAuth } from '../context/AuthContext';
 
-
 const API_BASE = import.meta.env.VITE_MAIN_BASE_URL + '/api/app';
 
-// ── Authenticated fetch helper ─────────────────────────────────────────────
+const LANGUAGES = [
+  { code: 'English', name: 'English' },
+  { code: 'Hindi', name: 'Hindi' },
+  { code: 'Tamil', name: 'Tamil' },
+  { code: 'Telugu', name: 'Telugu' },
+  { code: 'Kannada', name: 'Kannada' },
+  { code: 'Malayalam', name: 'Malayalam' },
+  { code: 'Marathi', name: 'Marathi' },
+  { code: 'Bengali', name: 'Bengali' },
+  { code: 'Gujarati', name: 'Gujarati' },
+  { code: 'Punjabi', name: 'Punjabi' },
+  { code: 'French', name: 'French' },
+  { code: 'Spanish', name: 'Spanish' },
+  { code: 'German', name: 'German' },
+  { code: 'Italian', name: 'Italian' },
+  { code: 'Portuguese', name: 'Portuguese' },
+  { code: 'Arabic', name: 'Arabic' },
+  { code: 'Chinese', name: 'Chinese' },
+  { code: 'Japanese', name: 'Japanese' },
+  { code: 'Korean', name: 'Korean' },
+  { code: 'Russian', name: 'Russian' },
+];
+
 async function authFetch(url, token, options = {}) {
   const res = await fetch(url, {
     ...options,
@@ -20,7 +41,6 @@ async function authFetch(url, token, options = {}) {
   return data;
 }
 
-// ── Normalize ingredient — handles both string and object formats ──────────
 function normalizeIngredient(ing) {
   if (typeof ing === 'string') return ing;
   if (ing && typeof ing === 'object') {
@@ -31,7 +51,6 @@ function normalizeIngredient(ing) {
   return String(ing);
 }
 
-// ── Normalize a full recipe ────────────────────────────────────────────────
 function normalizeRecipe(r) {
   return {
     ...r,
@@ -40,41 +59,31 @@ function normalizeRecipe(r) {
       ...s,
       step_number: s.step_number ?? i + 1,
       explanation: s.explanation && Object.keys(s.explanation).length > 0
-        ? s.explanation
-        : null,
+        ? s.explanation : null,
     })),
   };
 }
 
-// ── Main Panel ─────────────────────────────────────────────────────────────
 export default function AIRecipePanel() {
   const { token } = useAuth();
 
   const [selectedIngredients, setSelectedIngredients] = useState([]);
-  const [loading, setLoading]   = useState(false);
-  const [error, setError]       = useState('');
-  const [recipe, setRecipe]     = useState(null);
-  const [saving, setSaving]     = useState(false);
-  const [saved, setSaved]       = useState(false);
-  const [view, setView]         = useState('generate'); // 'generate' | 'saved' | 'history'
+  const [language, setLanguage]         = useState('English');
+  const [langOpen, setLangOpen]         = useState(false);
+  const [loading, setLoading]           = useState(false);
+  const [error, setError]               = useState('');
+  const [recipe, setRecipe]             = useState(null);
+  const [saving, setSaving]             = useState(false);
+  const [saved, setSaved]               = useState(false);
+  const [view, setView]                 = useState('generate');
+  const [savedRecipes, setSavedRecipes] = useState([]);
+  const [loadingSaved, setLoadingSaved] = useState(false);
+  const [savedError, setSavedError]     = useState('');
+  const [activeRecipe, setActiveRecipe] = useState(null);
 
-  // saved recipes state
-  const [savedRecipes, setSavedRecipes]   = useState([]);
-  const [loadingSaved, setLoadingSaved]   = useState(false);
-  const [savedError, setSavedError]       = useState('');
-  const [activeRecipe, setActiveRecipe]   = useState(null);
+  const selectedLang = LANGUAGES.find(l => l.code === language) || LANGUAGES[0];
 
-  // history state
-  const [historyList, setHistoryList]         = useState([]);  // list from /temp_recipes
-  const [loadingHistory, setLoadingHistory]   = useState(false);
-  const [historyError, setHistoryError]       = useState('');
-  const [activeHistory, setActiveHistory]     = useState(null); // full recipe detail
-  const [loadingDetail, setLoadingDetail]     = useState(false);
-  const [detailError, setDetailError]         = useState('');
-  const [savingHistory, setSavingHistory]     = useState(false);
-  const [savedHistory, setSavedHistory]       = useState({});  // { [id]: true }
-
-  // ── Generate ──────────────────────────────────────────────────────────────
+  // ── Generate — passes language as a key in the request body ──────────────
   const generate = async () => {
     if (!token)                           { setError('You must be logged in to generate recipes.'); return; }
     if (selectedIngredients.length === 0) { setError('Please add at least one ingredient.'); return; }
@@ -84,7 +93,11 @@ export default function AIRecipePanel() {
     try {
       const data = await authFetch(`${API_BASE}/recipe/generate`, token, {
         method: 'POST',
-        body: JSON.stringify({ ingredients: selectedIngredients }),
+        body: JSON.stringify({
+          ingredients: selectedIngredients,
+          language,                          // ← language key sent to backend
+          language_name: selectedLang.name,  // ← human-readable name for backend prompt
+        }),
       });
       setRecipe(normalizeRecipe(data));
     } catch (err) {
@@ -100,8 +113,7 @@ export default function AIRecipePanel() {
     }
   };
 
-  // ── Save generated recipe ─────────────────────────────────────────────────
-  const saveRecipe = async (tempKey, onSuccess) => {
+  const saveRecipe = async (tempKey) => {
     if (!tempKey) { setError('No temp_key found. Cannot save this recipe.'); return; }
     setSaving(true);
     try {
@@ -109,8 +121,7 @@ export default function AIRecipePanel() {
         method: 'POST',
         body: JSON.stringify({ temp_key: tempKey }),
       });
-      if (onSuccess) onSuccess();
-      else setSaved(true);
+      setSaved(true);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -118,7 +129,6 @@ export default function AIRecipePanel() {
     }
   };
 
-  // ── Load saved recipes — GET /api/app/recipe/saved ─────────────────────────
   const loadSaved = useCallback(async () => {
     setView('saved');
     setActiveRecipe(null);
@@ -140,63 +150,9 @@ export default function AIRecipePanel() {
     }
   }, [token]);
 
-  // ── Load history — GET /api/app/recipe/temp_recipes ───────────────────────
-  const loadHistory = useCallback(async () => {
-    setView('history');
-    setActiveHistory(null);
-    setHistoryError('');
-    setLoadingHistory(true);
-    setHistoryList([]);
-    try {
-      const data = await authFetch(`${API_BASE}/recipe/temp_recipes`, token);
-      setHistoryList(data.recipes || []);
-    } catch (err) {
-      if (err.message.includes('expired')) {
-        setHistoryError('Session expired. Please log out and log in again.');
-      } else {
-        setHistoryError(err.message);
-      }
-    } finally {
-      setLoadingHistory(false);
-    }
-  }, [token]);
-
-  // ── Load single temp recipe detail — GET /temp_recipes/:id ────────────────
-  const loadHistoryDetail = async (item) => {
-    setDetailError('');
-    setLoadingDetail(true);
-    setActiveHistory(null);
-    try {
-      const data = await authFetch(`${API_BASE}/recipe/temp_recipes/${item.id}`, token);
-      setActiveHistory(normalizeRecipe(data));
-    } catch (err) {
-      setDetailError(err.message);
-    } finally {
-      setLoadingDetail(false);
-    }
-  };
-
-  // ── Save a history recipe ─────────────────────────────────────────────────
-  const saveHistoryRecipe = async (tempKey, recipeId) => {
-    if (!tempKey) return;
-    setSavingHistory(true);
-    try {
-      await authFetch(`${API_BASE}/recipe/save_recipe`, token, {
-        method: 'POST',
-        body: JSON.stringify({ temp_key: tempKey }),
-      });
-      setSavedHistory(prev => ({ ...prev, [recipeId]: true }));
-    } catch (err) {
-      setDetailError(err.message);
-    } finally {
-      setSavingHistory(false);
-    }
-  };
-
   const TABS = [
-    { id: 'generate', label: '✦ Generate' , onClick: () => { setView('generate'); setError(''); } },
-    { id: 'history',  label: '🕑 History',  onClick: loadHistory },
-    { id: 'saved',    label: '♥ Saved',     onClick: loadSaved },
+    { id: 'generate', label: '✦ Generate', onClick: () => { setView('generate'); setError(''); } },
+    { id: 'saved',    label: '♥ Saved',    onClick: loadSaved },
   ];
 
   return (
@@ -235,6 +191,71 @@ export default function AIRecipePanel() {
 
           <IngredientDropdown selected={selectedIngredients} onChange={setSelectedIngredients} />
 
+          {/* ── Language selector ── */}
+          <div style={{ marginTop: 'var(--sp-3)', position: 'relative' }}>
+            <div style={{
+              fontSize: '10px', fontWeight: 700, letterSpacing: '0.08em',
+              textTransform: 'uppercase', color: 'rgba(255,255,255,.4)',
+              marginBottom: '6px',
+            }}>
+              🌐 Recipe Language
+            </div>
+            <button
+              onClick={() => setLangOpen(v => !v)}
+              style={{
+                width: '100%', background: 'rgba(255,255,255,.07)',
+                border: `1px solid ${langOpen ? 'rgba(232,83,26,.4)' : 'rgba(255,255,255,.12)'}`,
+                borderRadius: 'var(--r-md)', padding: '9px 14px',
+                fontFamily: 'var(--font-body)', fontSize: 'var(--fs-sm)', fontWeight: 500,
+                color: language === 'en' ? 'rgba(255,255,255,.5)' : 'var(--clr-primary-light)',
+                cursor: 'pointer', display: 'flex', justifyContent: 'space-between',
+                alignItems: 'center', transition: 'all 0.2s',
+              }}
+            >
+              <span>
+                {language === 'en'
+                  ? '🌐 English (default)'
+                  : `🌐 ${selectedLang.name}`}
+              </span>
+              <span style={{ fontSize: '10px', opacity: 0.5 }}>{langOpen ? '▲' : '▼'}</span>
+            </button>
+
+            {langOpen && (
+              <div style={{
+                position: 'absolute', top: 'calc(100% + 4px)', left: 0, right: 0,
+                background: '#1C1108', border: '1px solid rgba(232,83,26,.25)',
+                borderRadius: 'var(--r-md)', maxHeight: 220, overflowY: 'auto',
+                zIndex: 60, boxShadow: 'var(--shadow-xl)',
+              }}>
+                {LANGUAGES.map(lang => (
+                  <button
+                    key={lang.code}
+                    onClick={() => { setLanguage(lang.code); setLangOpen(false); }}
+                    style={{
+                      width: '100%', background: language === lang.code
+                        ? 'rgba(232,83,26,.18)' : 'transparent',
+                      border: 'none', borderBottom: '1px solid rgba(255,255,255,.05)',
+                      padding: '8px 14px', textAlign: 'left',
+                      fontFamily: 'var(--font-body)', fontSize: 'var(--fs-xs)', fontWeight: 500,
+                      color: language === lang.code
+                        ? 'var(--clr-primary-light)' : 'rgba(255,255,255,.6)',
+                      cursor: 'pointer', display: 'flex', justifyContent: 'space-between',
+                      alignItems: 'center', transition: 'background 0.15s',
+                    }}
+                    onMouseEnter={e => { if (language !== lang.code) e.currentTarget.style.background = 'rgba(255,255,255,.06)'; }}
+                    onMouseLeave={e => { if (language !== lang.code) e.currentTarget.style.background = 'transparent'; }}
+                  >
+                    <span>{lang.name}</span>
+                    {language === lang.code && (
+                      <span style={{ fontSize: '10px', color: 'var(--clr-primary-light)' }}>✓</span>
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* ── Generate button ── */}
           <button
             className="btn-ai-generate"
             style={{ marginTop: 'var(--sp-4)' }}
@@ -242,8 +263,8 @@ export default function AIRecipePanel() {
             disabled={loading || selectedIngredients.length === 0}
           >
             {loading
-              ? <><div className="spinner" /> Generating with AI…</>
-              : <>✦ Generate Recipe</>}
+              ? <><div className="spinner" /> Generating{language !== 'en' ? ` in ${selectedLang.name}` : ' with AI'}…</>
+              : <>✦ Generate Recipe{language !== 'en' ? ` in ${selectedLang.name}` : ''}</>}
           </button>
 
           {error && <div className="ai-error">⚠ {error}</div>}
@@ -254,154 +275,14 @@ export default function AIRecipePanel() {
               token={token}
               saved={saved}
               saving={saving}
-              onSave={() => saveRecipe(recipe.temp_key, null)}
+              onSave={() => saveRecipe(recipe.temp_key)}
             />
           )}
         </>
       )}
 
       {/* ══════════════════════════════════════
-          HISTORY VIEW
-      ══════════════════════════════════════ */}
-      {view === 'history' && (
-        <>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--sp-3)' }}>
-            <div>
-              <h2 className="ai-panel-title" style={{ margin: 0 }}>Recipe History</h2>
-              <p className="ai-panel-sub" style={{ margin: 0 }}>All recipes you have generated — save any to keep permanently.</p>
-            </div>
-            <button onClick={loadHistory} disabled={loadingHistory} style={{
-              background: 'rgba(255,255,255,.06)', border: '1px solid rgba(255,255,255,.10)',
-              borderRadius: 'var(--r-md)', padding: '5px 12px',
-              fontFamily: 'var(--font-body)', fontSize: 'var(--fs-xs)', fontWeight: 600,
-              color: 'rgba(255,255,255,.5)', cursor: 'pointer',
-            }}>
-              {loadingHistory
-                ? <div className="spinner" style={{ width: 10, height: 10, borderWidth: 1.5 }} />
-                : '↻ Refresh'}
-            </button>
-          </div>
-
-          {/* Loading list */}
-          {loadingHistory && (
-            <div style={{ display: 'flex', justifyContent: 'center', padding: 'var(--sp-5)' }}>
-              <div className="spinner" />
-            </div>
-          )}
-
-          {/* Error */}
-          {historyError && (
-            <div className="ai-error">
-              ⚠ {historyError}
-              <button onClick={loadHistory} style={{
-                background: 'none', border: 'none', color: 'var(--clr-primary-light)',
-                cursor: 'pointer', fontFamily: 'var(--font-body)',
-                fontSize: 'var(--fs-xs)', fontWeight: 700, marginLeft: '8px', padding: 0,
-              }}>Try again</button>
-            </div>
-          )}
-
-          {/* Empty state */}
-          {!loadingHistory && !historyError && historyList.length === 0 && (
-            <div style={{ textAlign: 'center', padding: 'var(--sp-5)', color: 'rgba(255,255,255,.35)', fontSize: 'var(--fs-sm)' }}>
-              <div style={{ fontSize: '2rem', marginBottom: 'var(--sp-2)' }}>🕑</div>
-              No recipe history yet. Generate your first recipe!
-            </div>
-          )}
-
-          {/* Loading detail */}
-          {loadingDetail && (
-            <div style={{ display: 'flex', justifyContent: 'center', padding: 'var(--sp-4)' }}>
-              <div className="spinner" />
-            </div>
-          )}
-
-          {/* Detail error */}
-          {detailError && !loadingDetail && (
-            <div className="ai-error">⚠ {detailError}</div>
-          )}
-
-          {/* Full recipe detail */}
-          {activeHistory && !loadingDetail && (
-            <div className="ai-result">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--sp-2)' }}>
-                <button onClick={() => { setActiveHistory(null); setDetailError(''); }} style={{
-                  background: 'none', border: 'none', color: 'rgba(255,255,255,.45)',
-                  cursor: 'pointer', fontSize: 'var(--fs-xs)', fontFamily: 'var(--font-body)',
-                  fontWeight: 600, padding: 0, display: 'flex', alignItems: 'center', gap: '4px',
-                }}>
-                  ← Back to history
-                </button>
-
-                {/* Save button for history recipe */}
-                <button
-                  onClick={() => saveHistoryRecipe(activeHistory.temp_key, activeHistory.id)}
-                  disabled={savingHistory || savedHistory[activeHistory.id]}
-                  style={{
-                    background: savedHistory[activeHistory.id] ? 'rgba(42,157,92,.20)' : 'rgba(232,83,26,.20)',
-                    border: `1px solid ${savedHistory[activeHistory.id] ? 'rgba(42,157,92,.35)' : 'rgba(232,83,26,.35)'}`,
-                    borderRadius: 'var(--r-md)', padding: '6px 14px',
-                    fontFamily: 'var(--font-body)', fontSize: 'var(--fs-xs)', fontWeight: 700,
-                    color: savedHistory[activeHistory.id] ? '#5EE8A0' : 'var(--clr-primary-light)',
-                    cursor: savedHistory[activeHistory.id] ? 'default' : 'pointer',
-                    display: 'flex', alignItems: 'center', gap: '6px',
-                    transition: 'all 0.2s',
-                  }}
-                >
-                  {savingHistory
-                    ? <><div className="spinner" style={{ width: 12, height: 12, borderWidth: 2 }} /> Saving…</>
-                    : savedHistory[activeHistory.id] ? <>✓ Saved</> : <>♥ Save Recipe</>}
-                </button>
-              </div>
-
-              <h3 className="ai-result-title">{activeHistory.title}</h3>
-              <RecipeDetail recipe={activeHistory} token={token} />
-            </div>
-          )}
-
-          {/* History list */}
-          {!activeHistory && !loadingDetail && !loadingHistory && historyList.length > 0 && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              <div style={{ fontSize: 'var(--fs-xs)', color: 'rgba(255,255,255,.3)', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: '4px' }}>
-                {historyList.length} recipe{historyList.length !== 1 ? 's' : ''} in history
-              </div>
-              {historyList.map((item, idx) => (
-                <button
-                  key={item.id || idx}
-                  onClick={() => loadHistoryDetail(item)}
-                  style={{
-                    background: 'rgba(255,255,255,.04)', border: '1px solid rgba(255,255,255,.08)',
-                    borderRadius: 'var(--r-md)', padding: 'var(--sp-3)', textAlign: 'left',
-                    cursor: 'pointer', transition: 'all 0.2s', fontFamily: 'var(--font-body)', width: '100%',
-                  }}
-                  onMouseEnter={e => { e.currentTarget.style.background = 'rgba(232,83,26,.10)'; e.currentTarget.style.borderColor = 'rgba(232,83,26,.25)'; }}
-                  onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,.04)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,.08)'; }}
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--sp-2)' }}>
-                    <div style={{ fontFamily: 'var(--font-display)', fontWeight: 600, color: '#fff', fontSize: 'var(--fs-base)' }}>
-                      {item.title}
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
-                      {savedHistory[item.id] && (
-                        <span style={{ fontSize: '10px', color: '#5EE8A0', fontWeight: 700 }}>✓ Saved</span>
-                      )}
-                      <span style={{
-                        fontSize: '10px', color: 'rgba(255,255,255,.4)',
-                        background: 'rgba(255,255,255,.06)', borderRadius: 'var(--r-sm)', padding: '2px 8px',
-                      }}>
-                        View →
-                      </span>
-                    </div>
-                  </div>
-                </button>
-              ))}
-            </div>
-          )}
-        </>
-      )}
-
-      {/* ══════════════════════════════════════
-          SAVED RECIPES VIEW
+          SAVED VIEW
       ══════════════════════════════════════ */}
       {view === 'saved' && (
         <>
@@ -532,7 +413,6 @@ export default function AIRecipePanel() {
   );
 }
 
-// ── Generated recipe result with save button ──────────────────────────────
 function AIResult({ recipe, token, saved, saving, onSave }) {
   return (
     <div className="ai-result">
@@ -560,7 +440,6 @@ function AIResult({ recipe, token, saved, saving, onSave }) {
   );
 }
 
-// ── Shared recipe detail ───────────────────────────────────────────────────
 function RecipeDetail({ recipe, token }) {
   return (
     <>
@@ -596,7 +475,6 @@ function RecipeDetail({ recipe, token }) {
   );
 }
 
-// ── Single step with Explain toggle ───────────────────────────────────────
 function StepItem({ step, stepIndex, recipeId, recipeTitle, token }) {
   const [explaining, setExplaining]           = useState(false);
   const [explanation, setExplanation]         = useState(step.explanation || null);
@@ -660,14 +538,11 @@ function StepItem({ step, stepIndex, recipeId, recipeTitle, token }) {
         </div>
       )}
 
-      {showExplanation && explanation && (
-        <ExplanationPanel explanation={explanation} />
-      )}
+      {showExplanation && explanation && <ExplanationPanel explanation={explanation} />}
     </li>
   );
 }
 
-// ── Culinary science explanation panel ────────────────────────────────────
 function ExplanationPanel({ explanation }) {
   const fields = [
     { key: 'purpose',                label: '🎯 Purpose' },
@@ -689,7 +564,6 @@ function ExplanationPanel({ explanation }) {
       <div style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--clr-primary-light)' }}>
         🔬 Culinary Science
       </div>
-
       {fields.map(({ key, label }) =>
         explanation[key] ? (
           <div key={key}>
@@ -702,7 +576,6 @@ function ExplanationPanel({ explanation }) {
           </div>
         ) : null
       )}
-
       {explanation.common_errors?.length > 0 && (
         <div>
           <div style={{ fontSize: '10px', fontWeight: 700, color: 'rgba(255,255,255,.4)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px' }}>
@@ -714,13 +587,9 @@ function ExplanationPanel({ explanation }) {
                 padding: '10px 12px', background: 'rgba(224,36,61,.08)',
                 borderRadius: 'var(--r-sm)', border: '1px solid rgba(224,36,61,.15)',
               }}>
-                <div style={{ fontSize: '12px', color: '#FF8090', fontWeight: 600, marginBottom: '4px' }}>
-                  ✗ {err}
-                </div>
+                <div style={{ fontSize: '12px', color: '#FF8090', fontWeight: 600, marginBottom: '4px' }}>✗ {err}</div>
                 {explanation.how_to_fix_errors?.[i] && (
-                  <div style={{ fontSize: '12px', color: 'rgba(94,232,160,.8)' }}>
-                    ✓ {explanation.how_to_fix_errors[i]}
-                  </div>
+                  <div style={{ fontSize: '12px', color: 'rgba(94,232,160,.8)' }}>✓ {explanation.how_to_fix_errors[i]}</div>
                 )}
               </div>
             ))}

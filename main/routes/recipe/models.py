@@ -22,7 +22,8 @@ recipe_model = recipe_ns.model(
         "title": fields.String,
         "description": fields.String,
         "ingredients": fields.List(fields.String),
-        "instructions": fields.Raw
+        "instructions": fields.Raw,
+        "language": fields.String
     }
 )
 
@@ -30,7 +31,8 @@ recipe_model = recipe_ns.model(
 generate_input_model = recipe_ns.model(
     "GenerateInput",
     {
-        "ingredients": fields.List(fields.String, required=True)
+        "ingredients": fields.List(fields.String, required=True),
+        "language": fields.String(required=True, default="English")
     }
 )
 

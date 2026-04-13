@@ -3,7 +3,7 @@
 # ============================================
 @baseUrl = http://localhost:5000/api/auth
 @mainBaseUrl = http://localhost:5001/api/app
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc3MzEzNDA4OSwianRpIjoiMDYxNTJmNGYtMDAxNC00MjIzLWE5MGYtNGVkNjAzZDQ3MGExIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjY5YTNmMjZjMjc0NTgzZTdiZTk5YTUwNyIsIm5iZiI6MTc3MzEzNDA4OSwiY3NyZiI6IjE4NDlmNGRhLWEwOTItNGZmOC04MzYzLWM0NDI1MGYxYmJjNCIsImV4cCI6MTc3MzEzNDk4OX0.aTKVBsTENmdfZ4jAF9OKkl6SaYbgvsitwbr6H3w-LxY
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc3NjA4MDI0NywianRpIjoiYjVlNWI5ODctMmY2Ni00OGZiLWJlODktYzNlNmIwNjcwODA0IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjY5YTNmMjZjMjc0NTgzZTdiZTk5YTUwNyIsIm5iZiI6MTc3NjA4MDI0NywiY3NyZiI6ImNiNTcxY2FmLWY5NDYtNDQ4Zi04OGYxLTI4MTI0OWE0NWY5ZSIsImV4cCI6MTc3NjA4MTE0N30.23_PUSzfqKZkXnyYGminh5kxvcMaL9ZULca64ne2w60
 
 # ============================================
 # Auth
@@ -17,12 +17,6 @@ Authorization: Bearer {{token}}
 {
   "username": "john_doe",
   "email": "john@example.com",
-=======
-@mainBaseUrl = http://localhost:5001/api/app
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc3MzU3MTc5MCwianRpIjoiNWRhZWQwNjUtM2QxOC00ZjdjLWJiNWYtNzlmMzllYjQ2NjVkIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjY5YjY2ZTRlNGJhZWM2M2UxYWYwNWRhYiIsIm5iZiI6MTc3MzU3MTc5MCwiY3NyZiI6IjI2OGM3YzFjLWM4N2EtNDk4Yy04MDM3LTk5MDA5YTE1ZDFjZCIsImV4cCI6MTc3MzY3MTY5MH0.KpTlwOdKcnd0CN6y0wAljU4CDXv-PxZHqjbeMa2g07s
-  "username": "john_doe",
-  "email": "john12@example.com",
->>>>>>> Stashed changes
   "password": "secret123"
 }
 
@@ -49,7 +43,8 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "ingredients": ["tomato", "basil", "mozzarella"]
+  "ingredients": ["tomato", "basil", "mozzarella"],
+  "language": "Malayalam"
 }
 
 ### Explain Step
@@ -60,7 +55,7 @@ Authorization: Bearer {{token}}
 {
   "step_number": 1,
   "context": "Tomato, Basil, Mozzarella Salad",
-  "recipe_id": "69afcfbadf39d1a2c5cd2f94"
+  "recipe_id": "69dcd5fd531f2c0f1ddcc304"
 }
 
 ### Save Recipe
@@ -69,7 +64,7 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "temp_key": "recipe_temp:69a3f26c274583e7be99a507:69afcfbadf39d1a2c5cd2f94"
+  "temp_key": "recipe_temp:69a3f26c274583e7be99a507:69dcd5fd531f2c0f1ddcc304"
 }
 
 ### List Recipes
