@@ -100,7 +100,7 @@ export default function RecipeHistory() {
   if (!token) return null;
 
   return (
-    <section style={{
+    <section id="recipe-history" style={{
       padding: 'var(--sp-7) 0',
       background: 'var(--clr-surface)',
       borderTop: '1px solid var(--clr-border)',

@@ -53,13 +53,13 @@ export default function AppPage() {
       />
 
       {/* 4 — Filters + recipe browser */}
-      <FiltersSection
+      {/* <FiltersSection
         filter={state.filter}
         setFilter={state.setFilter}
         sort={state.sort}
         setSort={state.setSort}
         resetFilters={state.resetFilters}
-      />
+      /> */}
 
       <RecipesSection
         selectedIngredients={state.selectedIngredients}
