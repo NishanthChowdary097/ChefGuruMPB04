@@ -9,7 +9,7 @@ export default function Hero({ addIngredient }) {
   };
 
   return (
-    <section className="hero" aria-label="Hero Section">
+    <section className="hero" id="discover" aria-label="Hero Section">
       <div className="hero-bg" aria-hidden="true">
         <div className="orb orb1" />
         <div className="orb orb2" />
