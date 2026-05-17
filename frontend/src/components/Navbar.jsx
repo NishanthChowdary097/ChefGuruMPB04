@@ -27,7 +27,8 @@ export default function Navbar() {
 
         <nav className="nav-links" role="navigation" aria-label="Main Navigation">
           <a href="#discover" className="nav-link">Discover</a>
-          <a href="#ingredients-section" className="nav-link">Ingredients</a>
+          {/* <a href="#ingredients-section" className="nav-link">Ingredients</a> */}
+          <a href="#recipes-section" className="nav-link">Recipes</a>
           <a href="#recipe-history" className="nav-link">Recipe History</a>
           {user && (
             <>
@@ -51,6 +52,7 @@ export default function Navbar() {
         <div className="mobile-menu" role="navigation" aria-label="Mobile Navigation">
           <a href="#discover" className="mob-link" onClick={closeMenu}>Discover</a>
           <a href="#ingredients-section" className="mob-link" onClick={closeMenu}>Ingredients</a>
+          <a href="#recipes-section" className="mob-link" onClick={closeMenu}>Recipes</a>
           <a href="#recipe-history" className="mob-link" onClick={closeMenu}>Recipe History</a>
           {user && (
             <button

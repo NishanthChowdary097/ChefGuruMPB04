@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 
 const API_BASE = import.meta.env.VITE_MAIN_BASE_URL + '/api/app';
 
-async function authFetch(url, token, options = {}) {
+async function authFetch(url, token, options = {}, refreshAccessTokenFn = null) {
   const res = await fetch(url, {
     ...options,
     headers: {
@@ -13,6 +13,33 @@ async function authFetch(url, token, options = {}) {
       ...(options.headers || {}),
     },
   });
+
+  // Handle token expiration (401)
+  if (res.status === 401 && refreshAccessTokenFn) {
+    try {
+      const refreshSuccess = await refreshAccessTokenFn();
+      if (refreshSuccess) {
+        // Retry the request with new token
+        const newToken = sessionStorage.getItem('fm_token');
+        if (newToken) {
+          const retryRes = await fetch(url, {
+            ...options,
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${newToken}`,
+              ...(options.headers || {}),
+            },
+          });
+          const data = await retryRes.json().catch(() => ({}));
+          if (!retryRes.ok) throw new Error(data.message || data.error || data.msg || `Request failed (${retryRes.status})`);
+          return data;
+        }
+      }
+    } catch (error) {
+      console.error('Token refresh retry failed:', error);
+    }
+  }
+
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(data.message || data.error || data.msg || `Request failed (${res.status})`);
   return data;
@@ -42,7 +69,7 @@ function normalizeRecipe(r) {
 }
 
 export default function RecipeHistory() {
-  const { token } = useAuth();
+  const { token, refreshAccessToken } = useAuth();
 
   const [historyList, setHistoryList]       = useState([]);
   const [loading, setLoading]               = useState(false);
@@ -57,14 +84,14 @@ export default function RecipeHistory() {
     if (!token) return;
     setError(''); setLoading(true); setHistoryList([]);
     try {
-      const data = await authFetch(`${API_BASE}/recipe/temp_recipes`, token);
+      const data = await authFetch(`${API_BASE}/recipe/temp_recipes`, token, {}, refreshAccessToken);
       setHistoryList(data.recipes || []);
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
-  }, [token]);
+  }, [token, refreshAccessToken]);
 
   // auto-load on mount
   useEffect(() => { load(); }, [load]);
@@ -72,7 +99,7 @@ export default function RecipeHistory() {
   const openDetail = async (item) => {
     setDetailError(''); setLoadingDetail(true); setActiveRecipe(null);
     try {
-      const data = await authFetch(`${API_BASE}/recipe/temp_recipes/${item.id}`, token);
+      const data = await authFetch(`${API_BASE}/recipe/temp_recipes/${item.id}`, token, {}, refreshAccessToken);
       setActiveRecipe(normalizeRecipe(data));
     } catch (err) {
       setDetailError(err.message);
@@ -88,7 +115,7 @@ export default function RecipeHistory() {
       await authFetch(`${API_BASE}/recipe/save_recipe`, token, {
         method: 'POST',
         body: JSON.stringify({ temp_key: tempKey }),
-      });
+      }, refreshAccessToken);
       setSavedMap(prev => ({ ...prev, [recipeId]: true }));
     } catch (err) {
       setDetailError(err.message);
@@ -267,6 +294,7 @@ export default function RecipeHistory() {
                       recipeId={activeRecipe.id}
                       recipeTitle={activeRecipe.title}
                       token={token}
+                      refreshAccessToken={refreshAccessToken}
                     />
                   ))}
                 </div>
@@ -337,7 +365,7 @@ export default function RecipeHistory() {
 }
 
 // ── Step item with explain ─────────────────────────────────────────────────
-function HistoryStepItem({ step, stepIndex, recipeId, recipeTitle, token }) {
+function HistoryStepItem({ step, stepIndex, recipeId, recipeTitle, token, refreshAccessToken }) {
   const [explaining, setExplaining]           = useState(false);
   const [explanation, setExplanation]         = useState(step.explanation || null);
   const [showExplanation, setShowExplanation] = useState(false);
@@ -354,7 +382,7 @@ function HistoryStepItem({ step, stepIndex, recipeId, recipeTitle, token }) {
           context:     recipeTitle,
           recipe_id:   recipeId,
         }),
-      });
+      }, refreshAccessToken);
       setExplanation(data);
       setShowExplanation(true);
     } catch (err) {
