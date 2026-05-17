@@ -1,6 +1,6 @@
 from flask import request, redirect, render_template, jsonify
 from flask_restx import Resource
-from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token
+from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token, create_refresh_token
 from datetime import timedelta, datetime
 
 from auth.routes.user import user_ns, user_bp
@@ -203,9 +203,11 @@ class Refresh(Resource):
         try:
             identity = get_jwt_identity()
             access_token = create_access_token(identity=identity)
+            refresh_token = create_refresh_token(identity=identity)
 
             return {
-                "access_token": access_token
+                "access_token": access_token,
+                "refresh_token": refresh_token
             }, 200
 
         except Exception as e:

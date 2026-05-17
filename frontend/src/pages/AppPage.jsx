@@ -45,21 +45,21 @@ export default function AppPage() {
       </section>
 
       {/* 3 — Ingredients section below AI panel */}
-      <IngredientsSection
+      {/* <IngredientsSection
         selectedIngredients={state.selectedIngredients}
         addIngredient={state.addIngredient}
         removeIngredient={state.removeIngredient}
         clearIngredients={state.clearIngredients}
-      />
+      /> */}
 
       {/* 4 — Filters + recipe browser */}
-      <FiltersSection
+      {/* <FiltersSection
         filter={state.filter}
         setFilter={state.setFilter}
         sort={state.sort}
         setSort={state.setSort}
         resetFilters={state.resetFilters}
-      />
+      /> */}
 
       <RecipesSection
         selectedIngredients={state.selectedIngredients}
