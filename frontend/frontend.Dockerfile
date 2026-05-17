@@ -24,6 +24,9 @@ FROM nginx:alpine
 # Remove default nginx website
 RUN rm -rf /usr/share/nginx/html/*
 
+# Copy custom nginx config
+COPY ./frontend/nginx.conf /etc/nginx/nginx.conf
+
 # Copy build output
 COPY --from=builder /app/frontend/dist /usr/share/nginx/html
 
